@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useTable, useFilters } from "react-table";
+import { useTable, useFilters, useSortBy } from "react-table";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
@@ -40,6 +40,12 @@ const Classes = () => {
         Header: "Owner",
         accessor: "owner",
       },
+      {
+        Header: "Co-teachers",
+        accessor: "coTeachers",
+        // Cell: ({value}) => value.map((item)=> <div className="border">{item}</div>)
+        Cell: ({value}) => value.join(", ")
+      },
     ],
     []
   );
@@ -71,7 +77,8 @@ const Classes = () => {
       columns,
       data: classes,
     },
-    useFilters
+    useFilters,
+    useSortBy // SORT
   );
 
   return (
@@ -149,9 +156,10 @@ const Classes = () => {
               {headerGroup.headers.map((column) => (
                 <th
                   className="py-2 text-left font-semibold text-zinc-700"
-                  {...column.getHeaderProps()}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
                   {column.render("Header")}
+                  <span className="inline-block whitespace-pre w-6 text-sm">{column.isSorted ? column.isSortedDesc ? ' ▼' : ' ▲' : '  '}</span>
                 </th>
               ))}
             </tr>

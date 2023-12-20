@@ -10,6 +10,7 @@ export const ClassProvider = (props) => {
       subjectName: "History",
       grade: 5,
       owner: "Placeholder name",
+      coTeachers: ["Teacher 1", "Teacher 2"]
     },
     {
       classId: 2,
@@ -17,6 +18,7 @@ export const ClassProvider = (props) => {
       subjectName: "English",
       grade: 4,
       owner: "Placeholder name",
+      coTeachers: ["Teacher 1", "Teacher 2"]
     },
     {
       classId: 3,
@@ -24,6 +26,7 @@ export const ClassProvider = (props) => {
       subjectName: "Math",
       grade: 5,
       owner: "Placeholder name",
+      coTeachers: ["Teacher 1", "Teacher 2"]
     },
     {
       classId: 4,
@@ -31,6 +34,7 @@ export const ClassProvider = (props) => {
       subjectName: "Art",
       grade: 2,
       owner: "Placeholder name",
+      coTeachers: ["Teacher 1", "Teacher 2"]
     },
     {
       classId: 5,
@@ -38,6 +42,7 @@ export const ClassProvider = (props) => {
       subjectName: "History",
       grade: 5,
       owner: "Placeholder name",
+      coTeachers: ["Teacher 1", "Teacher 2"]
     },
   ]);
 
