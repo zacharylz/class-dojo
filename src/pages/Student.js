@@ -36,7 +36,7 @@ const Student = () => {
     {
       skillId: 2,
       teacherId: 1,
-      skillValue: -1,
+      skillValue: -2,
       feedbackDetails: "Occasionally loses focus in class",
       feedbackDate: "placeholder date",
     },

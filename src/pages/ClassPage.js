@@ -23,17 +23,90 @@ const ClassPage = () => {
       [2, 7, 14].includes(studentObj.studentId)
     )
   );
+  
+
+  useEffect(() => {
+    const metrics = {};
+
+     const studentFeedback = [
+    {
+      skillId: 1,
+      teacherId: 1,
+      skillValue: 2,
+      feedbackDetails: "Able to handle new types of problems",
+      feedbackDate: "placeholder date",
+    },
+    {
+      skillId: 2,
+      teacherId: 1,
+      skillValue: -2,
+      feedbackDetails: "Occasionally loses focus in class",
+      feedbackDate: "placeholder date",
+    },
+    {
+      skillId: 3,
+      teacherId: 1,
+      skillValue: 1,
+      feedbackDetails: "Showed willingness to help classmate",
+      feedbackDate: "placeholder date",
+    },
+    {
+      skillId: 2,
+      teacherId: 1,
+      skillValue: 1,
+      feedbackDetails: "Test Details 1",
+      feedbackDate: "placeholder date",
+    },
+    {
+      skillId: 1,
+      teacherId: 1,
+      skillValue: 0,
+      feedbackDetails: "Test Details 2",
+      feedbackDate: "placeholder date",
+    },
+    {
+      skillId: 1,
+      teacherId: 1,
+      skillValue: 3,
+      feedbackDetails: "Test Details 3",
+      feedbackDate: "placeholder date",
+    },
+  ];
+  for (let feedback of studentFeedback) {
+    feedback.skillId in metrics ? metrics[feedback.skillId] += feedback.skillValue : metrics[feedback.skillId] = feedback.skillValue;
+  }
+  let netScore = 0;
+  let negativeSkills = 0;
+
+  for (let value of Object.values(metrics)) {
+    netScore += value;
+    negativeSkills = value < 0 ? negativeSkills += 1 : negativeSkills;
+  }
+
+  metrics.netScore = netScore;
+  metrics.negativeSkills = negativeSkills;
+
+  setStudents(students.map((student) => {return {...student, netScore: metrics.netScore, negativeSkills: metrics.negativeSkills}}
+  ));
+
+  },[])
+ 
 
   const columns = useMemo(
     () => [
       {
-        Header: "Register",
-        accessor: "register",
-      },
-      {
         Header: "Name",
         accessor: "studentName",
       },
+      {
+        Header: "Net Score",
+        accessor: "netScore",
+      },
+      {
+        Header: "Negative Skills",
+        accessor: "negativeSkills",
+      },
+
     ],
     []
   );
@@ -88,6 +161,7 @@ const ClassPage = () => {
             setNameFilter(e.target.value);
           }}
         />
+        <button onClick={()=> console.log(students)}>Log</button>
       </div>
       {/* Table */}
       <table className="table-auto w-[98%] mx-auto" {...getTableProps()}>

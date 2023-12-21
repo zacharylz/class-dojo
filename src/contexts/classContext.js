@@ -47,12 +47,12 @@ export const ClassProvider = (props) => {
   ]);
 
   const [allStudents, setAllStudents] = useState([
-    { studentId: 14, register: 1, studentName: "Test14" },
-    { studentId: 2, register: 2, studentName: "Test2" },
-    { studentId: 7, register: 3, studentName: "Test7" },
-    { studentId: 3, register: "", studentName: "Test3" },
-    { studentId: 6, register: "", studentName: "Test6" },
-    { studentId: 12, register: "", studentName: "Test12" },
+    { studentId: 14, studentName: "Test14" },
+    { studentId: 2, studentName: "Test2" },
+    { studentId: 7, studentName: "Test7" },
+    { studentId: 3, studentName: "Test3" },
+    { studentId: 6, studentName: "Test6" },
+    { studentId: 12, studentName: "Test12" },
   ]);
 
   const state = {
