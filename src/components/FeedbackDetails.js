@@ -13,7 +13,7 @@ const FeedbackDetails = ({ feedback, teachers }) => {
         "border-b border-zinc-300": true,
       })}
     >
-      <div className="flex flex-col w-2/5">
+      <div className="flex flex-col w-4/5">
         <div className="text-sm text-zinc-500">
           {currentTeacher.teacherName}, {feedback.feedbackDate}
         </div>

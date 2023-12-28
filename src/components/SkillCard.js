@@ -9,12 +9,16 @@ const SkillCard = ({
 }) => {
   return (
     <div
-      onClick={() => setSelectedSkill(classSkill.skillId)}
+      onClick={() => {
+        selectedSkill === classSkill
+          ? setSelectedSkill("")
+          : setSelectedSkill(classSkill);
+      }}
       className={classNames({
         "flex flex-col items-center justify-between w-24 h-32 rounded-md p-4 cursor-pointer": true,
         "border border-zinc-400": true,
         "ring-2 ring-inset ring-indigo-500":
-          classSkill.skillId === selectedSkill,
+          classSkill.skillId === selectedSkill.skillId,
       })}
     >
       <div className="text-center">{classSkill.skillName}</div>
