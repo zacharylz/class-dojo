@@ -10,7 +10,7 @@ const FeedbackForm = ({
   submitFeedback,
 }) => {
   return (
-    <div className="flex flex-col gap-2 w-full ">
+    <div className="flex flex-col gap-2 w-full h-[400px]">
       <div className="text-lg font-semibold text-zinc-700">
         Submit New Feedback
       </div>
@@ -33,6 +33,7 @@ const FeedbackForm = ({
         className="w-[150px]"
         name="newFeedbackScore"
         placeholder="Select Score"
+        maxMenuHeight={150}
         options={[...Array(11).keys()].map((num) => {
           return { value: num - 5, label: num - 5 };
         })}

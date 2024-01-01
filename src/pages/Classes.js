@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useFilters, useSortBy } from "react-table";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ const Classes = () => {
   const [subjectFilter, setSubjectFilter] = useState("");
   const [gradeFilter, setGradeFilter] = useState("");
 
-  const { classes } = useClasses();
+  const { allClasses, setCurrentClass } = useClasses();
 
   const MultiSelectFilter = (rows, column, filterValue) => {
     return filterValue.length === 0
@@ -24,11 +24,11 @@ const Classes = () => {
     () => [
       {
         Header: "Class Name",
-        accessor: "className",
+        accessor: "class_name",
       },
       {
         Header: "Subject",
-        accessor: "subjectName",
+        accessor: "subject_name",
         filter: MultiSelectFilter,
       },
       {
@@ -36,34 +36,72 @@ const Classes = () => {
         accessor: "grade",
         filter: MultiSelectFilter,
       },
-      {
-        Header: "Owner",
-        accessor: "owner",
-      },
-      {
-        Header: "Co-teachers",
-        accessor: "coTeachers",
-        // Cell: ({value}) => value.map((item)=> <div className="border">{item}</div>)
-        Cell: ({ value }) => value.join(", "),
-      },
+      // {
+      //   Header: "Owner",
+      //   accessor: "owner",
+      // },
+      // {
+      //   Header: "Co-teachers",
+      //   accessor: "coTeachers",
+      //   // Cell: ({value}) => value.map((item)=> <div className="border">{item}</div>)
+      //   Cell: ({ value }) => value.join(", "),
+      // },
     ],
     []
   );
 
-  const subjectOptions = [
-    { value: "Art", label: "Art" },
-    { value: "History", label: "History" },
-    { value: "English", label: "English" },
-    { value: "Math", label: "Math" },
-  ];
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [gradeOptions, setGradeOptions] = useState([]);
 
-  const gradeOptions = [
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-    { value: 5, label: "5" },
-  ];
+  useEffect(() => {
+    const classSubjects = [
+      ...new Set(allClasses.map((classObj) => classObj.subject_name)),
+    ];
+
+    const classGrades = [
+      ...new Set(allClasses.map((classObj) => classObj.grade)),
+    ];
+
+    setSubjectOptions(
+      classSubjects
+        .map((subject) => {
+          return { value: subject, label: subject };
+        })
+        .sort((a, b) => {
+          if (a.value < b.value) {
+            return -1;
+          } else if (a.value === b.value) {
+            return 0;
+          } else {
+            return 1;
+          }
+        })
+    );
+    setGradeOptions(
+      classGrades
+        .map((grade) => {
+          return { value: grade, label: grade };
+        })
+        .sort((a, b) => {
+          return a.value - b.value;
+        })
+    );
+  }, allClasses);
+
+  // const subjectOptions = [
+  //   { value: "Art", label: "Art" },
+  //   { value: "History", label: "History" },
+  //   { value: "English", label: "English" },
+  //   { value: "Math", label: "Math" },
+  // ];
+
+  // const gradeOptions = [
+  //   { value: 1, label: "1" },
+  //   { value: 2, label: "2" },
+  //   { value: 3, label: "3" },
+  //   { value: 4, label: "4" },
+  //   { value: 5, label: "5" },
+  // ];
 
   const {
     getTableProps,
@@ -75,7 +113,7 @@ const Classes = () => {
   } = useTable(
     {
       columns,
-      data: classes,
+      data: allClasses,
     },
     useFilters,
     useSortBy // SORT
@@ -86,8 +124,8 @@ const Classes = () => {
       <div className="w-full min-h-[57px]"></div>
       <div
         className={classNames({
-          "flex w-full fixed h-[57px] px-3 items-center": true,
-          "border-b border-b-zinc-200": true,
+          "flex w-full fixed z-10 h-[57px] px-3 items-center gap-2": true,
+          "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
       >
@@ -107,7 +145,7 @@ const Classes = () => {
             placeholder="Search Class Name"
             value={nameFilter}
             onChange={(e) => {
-              setFilter("className", e.target.value);
+              setFilter("class_name", e.target.value);
               setNameFilter(e.target.value);
             }}
           />
@@ -120,7 +158,7 @@ const Classes = () => {
             options={subjectOptions}
             onChange={(e) =>
               setFilter(
-                "subjectName",
+                "subject_name",
                 e.map((option) => option.value)
               )
             }
@@ -184,7 +222,11 @@ const Classes = () => {
             return (
               <tr
                 className="hover:bg-zinc-100"
-                onClick={() => navigate(`/class/${row.original.classId}`)}
+                onClick={() => {
+                  // console.log(row.original);
+                  // setCurrentClass(row.original);
+                  navigate(`/class/${row.original.id}`);
+                }}
                 {...row.getRowProps()}
               >
                 {row.cells.map((cell) => {

@@ -4,71 +4,67 @@ import Select from "react-select";
 import { useClasses } from "../contexts/classContext";
 import { Link } from "react-router-dom";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import AddStudents from "../components/AddStudents";
+import AddPerson from "../components/AddPerson";
 
 const AddClass = () => {
-  const [subjectOptions, setSubjectOptions] = useState([
-    { value: "Art", label: "Art" },
-    { value: "History", label: "History" },
-    { value: "English", label: "English" },
-    { value: "Math", label: "Math" },
-  ]);
-  const [gradeOptions, setGradeOptions] = useState([
-    { value: 1, label: 1 },
-    { value: 2, label: 2 },
-    { value: 3, label: 3 },
-    { value: 4, label: 4 },
-    { value: 5, label: 5 },
-  ]);
-  const [skillOptions, setSkillOptions] = useState([
-    { value: 1, label: "Critical Thinking" },
-    { value: 2, label: "Effort" },
-    { value: 3, label: "Helping Others" },
-  ]);
-  const { allStudents } = useClasses();
-  const [studentOptions, setStudentOptions] = useState(
-    allStudents.map((student) => {
-      return { value: student.studentId, label: student.studentName };
+  const { allStudents, allSubjects, allSkills } = useClasses();
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [skillOptions, setSkillOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
+
+  useEffect(() => {
+    setStudentOptions(
+      allStudents.map((student) => {
+        return { value: student.id, label: student.full_name };
+      })
+    );
+
+    setSubjectOptions(
+      Object.entries(allSubjects).map((subject) => {
+        return { value: subject[0], label: subject[1] };
+      })
+    );
+    setSkillOptions(
+      Object.entries(allSkills).map((skill) => {
+        return { value: skill[0], label: skill[1] };
+      })
+    );
+  }, []);
+
+  const [gradeOptions, setGradeOptions] = useState(
+    [...Array(6).keys()].map((num) => {
+      return { value: num + 1, label: num + 1 };
     })
   );
-  const [studentFilter, setStudentFilter] = useState("");
 
   const [selectedName, setSelectedName] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [addStudentsDropdown, setAddStudentsDropdown] = useState([]);
-  const [selectedStudents, setSelectedStudents] = useState([]);
-
-  useEffect(() => {
-    const selectedStudentsIds = selectedStudents
-      ? selectedStudents.map((student) => student.studentId)
-      : [];
-    const filteredStudents = allStudents.filter(
-      (student) =>
-        student.studentName
-          .toLowerCase()
-          .includes(studentFilter.toLowerCase()) &&
-        !selectedStudentsIds.includes(student.studentId)
-    );
-    setStudentOptions(
-      filteredStudents.map((student) => {
-        return { value: student.studentId, label: student.studentName };
-      })
-    );
-  }, [studentFilter, selectedStudents]);
 
   const handleSubmit = () => {
     console.log(
       "Name",
       selectedName,
       "Subject",
-      selectedSubject,
+      selectedSubject.value,
       "Grade",
-      selectedGrade,
+      selectedGrade.value,
+      "Skills",
+      selectedSkills.map((skill) => {
+        return skill.value;
+      }),
       "Students",
-      selectedStudents
+      addStudentsDropdown.map((student) => {
+        return student.value;
+      })
     );
+    setSelectedName("");
+    setSelectedSubject([]);
+    setSelectedGrade([]);
+    setSelectedSkills([]);
+    setAddStudentsDropdown([]);
   };
 
   return (
@@ -120,7 +116,8 @@ const AddClass = () => {
               name="selectedSubject"
               placeholder="Select Subject"
               options={subjectOptions}
-              onChange={(e) => setSelectedSubject(e.value)}
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e)}
             />
           </div>
           {/* Grade Input */}
@@ -133,7 +130,8 @@ const AddClass = () => {
               name="selectedGrade"
               placeholder="Select Grade"
               options={gradeOptions}
-              onChange={(e) => setSelectedGrade(e.value)}
+              value={selectedGrade}
+              onChange={(e) => setSelectedGrade(e)}
             />
           </div>
           {/* Skill Input */}
@@ -155,15 +153,11 @@ const AddClass = () => {
         </div>
         <div className="flex flex-col gap-4">
           {/* Student Input */}
-          <AddStudents
-            title="Students:"
-            studentFilter={studentFilter}
-            setStudentFilter={setStudentFilter}
-            studentOptions={studentOptions}
-            addStudentsDropdown={addStudentsDropdown}
-            setAddStudentsDropdown={setAddStudentsDropdown}
-            selectedStudents={selectedStudents}
-            setSelectedStudents={setSelectedStudents}
+          <AddPerson
+            people="students"
+            peopleOptions={studentOptions}
+            addPeopleDropdown={addStudentsDropdown}
+            setAddPeopleDropdown={setAddStudentsDropdown}
           />
 
           <button
