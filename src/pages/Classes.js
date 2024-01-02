@@ -86,22 +86,7 @@ const Classes = () => {
           return a.value - b.value;
         })
     );
-  }, allClasses);
-
-  // const subjectOptions = [
-  //   { value: "Art", label: "Art" },
-  //   { value: "History", label: "History" },
-  //   { value: "English", label: "English" },
-  //   { value: "Math", label: "Math" },
-  // ];
-
-  // const gradeOptions = [
-  //   { value: 1, label: "1" },
-  //   { value: 2, label: "2" },
-  //   { value: 3, label: "3" },
-  //   { value: 4, label: "4" },
-  //   { value: 5, label: "5" },
-  // ];
+  }, [allClasses]);
 
   const {
     getTableProps,
@@ -124,7 +109,7 @@ const Classes = () => {
       <div className="w-full min-h-[57px]"></div>
       <div
         className={classNames({
-          "flex w-full fixed z-10 h-[57px] px-3 items-center gap-2": true,
+          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
@@ -132,7 +117,7 @@ const Classes = () => {
         Classes
       </div>
       {/* Filters and Buttons*/}
-      <div className="flex w-[98%] mx-auto max-w-screen-xl justify-between items-center py-4">
+      <div className="flex w-full mx-auto max-w-screen-xl justify-between items-center p-4">
         <div className="flex justify-start items-center gap-6">
           {/* Name Filter */}
           <input

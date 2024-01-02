@@ -21,15 +21,33 @@ export const ClassProvider = (props) => {
   const [currentClass, setCurrentClass] = useState("");
   const [currentClassFeedback, setCurrentClassFeedback] = useState([]);
 
+  const [refreshData, setRefreshData] = useState(1);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const studentData = await getAllStudents();
-        const teacherData = await getAllTeachers();
-        const classData = await getAllClasses();
-        const subjectData = await getAllSubjects();
-        const skillData = await getAllSkills();
-        const classSkillData = await getAllClassSkills();
+        const [
+          studentData,
+          teacherData,
+          classData,
+          subjectData,
+          skillData,
+          classSkillData,
+        ] = await Promise.all([
+          getAllStudents(),
+          getAllTeachers(),
+          getAllClasses(),
+          getAllSubjects(),
+          getAllSkills(),
+          getAllClassSkills(),
+        ]);
+
+        // const studentData = await getAllStudents();
+        // const teacherData = await getAllTeachers();
+        // const classData = await getAllClasses();
+        // const subjectData = await getAllSubjects();
+        // const skillData = await getAllSkills();
+        // const classSkillData = await getAllClassSkills();
 
         const subjects = {};
         subjectData.forEach((subject) => {
@@ -73,7 +91,7 @@ export const ClassProvider = (props) => {
       }
     };
     fetchData();
-  }, []);
+  }, [refreshData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,7 +112,7 @@ export const ClassProvider = (props) => {
       }
     };
     fetchData();
-  }, [currentClass]);
+  }, [currentClass, allClasses]);
 
   const state = {
     allStudents,
@@ -106,7 +124,8 @@ export const ClassProvider = (props) => {
     setCurrentClass,
     currentClass,
     currentClassFeedback,
-    // allClassSkills
+    setRefreshData,
+    refreshData,
   };
 
   return (

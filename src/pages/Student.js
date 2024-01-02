@@ -6,6 +6,7 @@ import classNames from "classnames";
 import SkillCard from "../components/SkillCard";
 import FeedbackDetails from "../components/FeedbackDetails";
 import FeedbackForm from "../components/FeedbackForm";
+import { giveStudentsFeedback } from "../api/backend";
 
 const Student = () => {
   const { classId, studentId } = useParams();
@@ -17,6 +18,8 @@ const Student = () => {
     allSkills,
     allClassSkills,
     currentClassFeedback,
+    setRefreshData,
+    refreshData,
   } = useClasses();
   const [classSkills, setClassSkills] = useState([]);
   const [currentStudent, setCurrentStudent] = useState([]);
@@ -40,24 +43,13 @@ const Student = () => {
         return studentObj.id === parseInt(studentId);
       })
     );
-    setCurrentStudentFeedback(
-      currentClassFeedback.find((student) => {
-        return student.student_id === parseInt(studentId);
-      }).recent_feedback
-    );
-  }, []);
-
-  // const [currentStudent, setCurrentStudent] = useState(
-  //   allStudents.find((studentObj) => {
-  //     return studentObj.id === parseInt(studentId);
-  //   })
-  // );
-
-  // const [currentStudentFeedback, setCurrentStudentFeedback] = useState(
-  //   currentClassFeedback.find((student) => {
-  //     return student.student_id === parseInt(studentId);
-  //   }).recent_feedback
-  // );
+    currentClassFeedback.length != 0 &&
+      setCurrentStudentFeedback(
+        currentClassFeedback.find((student) => {
+          return student.student_id === parseInt(studentId);
+        }).recent_feedback
+      );
+  }, [allClasses, currentClass, currentClassFeedback]);
 
   const [studentProfile, setStudentProfile] = useState([
     { label: "Parent/Guardian:", content: "Parent Name" },
@@ -66,12 +58,6 @@ const Student = () => {
   ]);
 
   const [selectedSkill, setSelectedSkill] = useState("");
-
-  // const [classSkills, setClassSkills] = useState([
-  //   { skillId: 1, skillName: "Critical Thinking" },
-  //   { skillId: 2, skillName: "Effort" },
-  //   { skillId: 3, skillName: "Helping Others" },
-  // ]);
 
   const sumScore = (skillId, feedbackArr) => {
     let score = 0;
@@ -86,12 +72,18 @@ const Student = () => {
   const [newFeedbackDetails, setNewFeedbackDetails] = useState("");
   const [newFeedbackScore, setNewFeedbackScore] = useState("");
 
-  // TODO: update submitFeedback
-
-  const submitFeedback = () => {
-    console.log(selectedSkill, newFeedbackDetails, newFeedbackScore);
+  const submitFeedback = async () => {
+    await giveStudentsFeedback(
+      currentStudent.id,
+      currentClass.id,
+      1, // TODO: replace with teacherId
+      selectedSkill.skill_id,
+      newFeedbackDetails,
+      newFeedbackScore.value
+    );
     setNewFeedbackDetails("");
     setNewFeedbackScore([]);
+    setRefreshData(refreshData + 1);
   };
 
   return (

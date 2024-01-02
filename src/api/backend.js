@@ -45,3 +45,34 @@ export const getClassFeedback = async (classId) => {
     .catch((err) => console.log(err));
   return classFeedback;
 };
+
+export const giveStudentsFeedback = async (
+  student_id,
+  class_id,
+  teacher_id,
+  skill_id,
+  feedback_comment,
+  skill_value
+) => {
+  await axios
+    .post(`${url}/teachers/class/feedback/giveFeedback`, {
+      student_id: student_id,
+      class_id: class_id,
+      teacher_id: teacher_id,
+      skill_id: skill_id,
+      feedback_comment: feedback_comment,
+      skill_value: skill_value,
+    })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+};
+
+export const addStudentsToClass = async (student_ids, class_id) => {
+  await axios
+    .post(`${url}/teachers/addStudentsToClass`, {
+      student_ids: student_ids,
+      class_id: class_id,
+    })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+};

@@ -8,6 +8,7 @@ import { useTable, useFilters } from "react-table";
 import { useNavigate } from "react-router";
 import AddPerson from "../components/AddPerson";
 import Select from "react-select";
+import { addStudentsToClass } from "../api/backend";
 
 const ClassPage = () => {
   const { classId } = useParams();
@@ -18,6 +19,8 @@ const ClassPage = () => {
     currentClass,
     setCurrentClass,
     currentClassFeedback,
+    refreshData,
+    setRefreshData,
   } = useClasses();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ const ClassPage = () => {
         return classData.id === parseInt(classId);
       })
     );
-  }, []);
+  }, [allClasses]);
 
   const navigate = useNavigate();
 
@@ -89,13 +92,20 @@ const ClassPage = () => {
     );
   }, []);
 
-  const submitAddStudents = () => {
-    console.log(
+  const submitAddStudents = async () => {
+    await addStudentsToClass(
       addStudentDropdown.map((student) => {
         return student.value;
-      })
+      }),
+      currentClass.id
     );
+    // console.log(
+    //   addStudentDropdown.map((student) => {
+    //     return student.value;
+    //   })
+    // );
     setAddStudentDropdown([]);
+    setRefreshData(refreshData + 1);
   };
 
   const submitAddCoteachers = () => {
@@ -149,7 +159,7 @@ const ClassPage = () => {
       <div className="w-full min-h-[57px]"></div>
       <div
         className={classNames({
-          "flex w-full fixed z-10 h-[57px] px-3 items-center gap-2": true,
+          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
@@ -164,7 +174,7 @@ const ClassPage = () => {
         <div>{currentClass && currentClass.class_name}</div>
       </div>
       {/* Filters and Utility */}
-      <div className="flex max-w-screen-xl w-[98%] mx-auto justify-between items-center py-4 gap-6">
+      <div className="flex max-w-screen-xl w-full mx-auto justify-between items-center p-4 gap-6">
         {/* Name Filter */}
         <input
           className={classNames({
@@ -180,6 +190,7 @@ const ClassPage = () => {
             setNameFilter(e.target.value);
           }}
         />
+        <button onClick={() => console.log(currentClassFeedback)}>LOG</button>
         {/* Add co-teachers and students button */}
         <button
           className={classNames({
