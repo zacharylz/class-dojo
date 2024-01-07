@@ -145,11 +145,11 @@ export const ClassProvider = (props) => {
         console.error("Failed to fetch data", error);
       }
     };
-    if (isAuthenticated) {
+    if (isAuthenticated && accessToken) {
       console.log("base data");
       fetchData();
     }
-  }, [refreshData, isAuthenticated]);
+  }, [refreshData, isAuthenticated, accessToken]);
 
   // Fetching current class daata
   useEffect(() => {

@@ -7,6 +7,7 @@ import SkillCard from "../components/SkillCard";
 import FeedbackDetails from "../components/FeedbackDetails";
 import FeedbackForm from "../components/FeedbackForm";
 import { giveStudentsFeedback } from "../api/backend";
+import HeaderProfile from "../components/HeaderProfile";
 
 const Student = () => {
   const { classId, studentId } = useParams();
@@ -105,29 +106,31 @@ const Student = () => {
 
   return (
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
-      {/* <div className="w-full min-h-[57px]"></div> */}
       <div
         className={classNames({
-          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+          "flex w-full justify-between sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
       >
-        <Link
-          className="hover:underline hover:text-zinc-600 cursor-pointer"
-          to="/classes"
-        >
-          Classes
-        </Link>
-        <ChevronRightIcon className="w-5 h-5 mt-1" />
-        <Link
-          className="hover:underline hover:text-zinc-600 cursor-pointer"
-          to={`/class/${classId}`}
-        >
-          {currentClass && currentClass.class_name}
-        </Link>
-        <ChevronRightIcon className="w-5 h-5 mt-1" />
-        <div>{currentStudent && currentStudent.full_name}</div>
+        <div className="flex items-center gap-2">
+          <Link
+            className="hover:underline hover:text-zinc-600 cursor-pointer"
+            to="/classes"
+          >
+            Classes
+          </Link>
+          <ChevronRightIcon className="w-5 h-5 mt-1" />
+          <Link
+            className="hover:underline hover:text-zinc-600 cursor-pointer"
+            to={`/class/${classId}`}
+          >
+            {currentClass && currentClass.class_name}
+          </Link>
+          <ChevronRightIcon className="w-5 h-5 mt-1" />
+          <div>{currentStudent && currentStudent.full_name}</div>
+        </div>
+        <HeaderProfile />
       </div>
       {/* Profile and Skill Cards */}
       <div className="flex max-w-screen-lg w-full mx-auto border-b border-zinc-200">
@@ -136,7 +139,7 @@ const Student = () => {
           <div className="text-2xl font-semibold text-zinc-700">
             {currentStudent && currentStudent.full_name}
           </div>
-          <button onClick={() => console.log(currentClassFeedback)}>LOG</button>
+          {/* <button onClick={() => console.log(currentClassFeedback)}>LOG</button> */}
           {studentProfile.map((item) => {
             return (
               <div className="flex flex-col">

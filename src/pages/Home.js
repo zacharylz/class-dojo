@@ -56,13 +56,13 @@ const Home = () => {
           icon={<PlusCircleIcon className="w-10 h-10" />}
         />
       </div>
-      <button onClick={() => loginWithRedirect()}>Log in</button>
+      {/* <button onClick={() => loginWithRedirect()}>Log in</button>
       <button onClick={() => logout()}>Log out</button>
       <button onClick={() => console.log(isAuthenticated, user, accessToken)}>
         LOG USER
       </button>
       <button onClick={() => console.log(allTeachers)}>LOG TEACHER</button>
-      <button onClick={() => console.log(accessToken)}>LOG</button>
+      <button onClick={() => console.log(accessToken)}>LOG</button> */}
     </div>
   );
 };

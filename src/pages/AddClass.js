@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import AddPerson from "../components/AddPerson";
 import { createClass } from "../api/backend";
+import HeaderProfile from "../components/HeaderProfile";
 
 const AddClass = () => {
   const {
@@ -87,19 +88,22 @@ const AddClass = () => {
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
       <div
         className={classNames({
-          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+          "flex w-full justify-between sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
           "border-b bg-white border-b-zinc-200": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
       >
-        <Link
-          className="hover:underline hover:text-zinc-600 cursor-pointer"
-          to="/classes"
-        >
-          Classes
-        </Link>
-        <ChevronRightIcon className="w-5 h-5 mt-1" />
-        <div>Add Class</div>
+        <div className="flex items-center gap-2">
+          <Link
+            className="hover:underline hover:text-zinc-600 cursor-pointer"
+            to="/classes"
+          >
+            Classes
+          </Link>
+          <ChevronRightIcon className="w-5 h-5 mt-1" />
+          <div>Add Class</div>
+        </div>
+        <HeaderProfile />
       </div>
       {/* Add Class Form */}
       <div className="flex justify-evenly max-w-screen-lg w-full mx-auto p-6">

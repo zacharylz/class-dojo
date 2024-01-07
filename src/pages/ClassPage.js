@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import AddPerson from "../components/AddPerson";
 import { addStudentsToClass, addTeacherToClass } from "../api/backend";
 import Select from "react-select";
+import HeaderProfile from "../components/HeaderProfile";
 
 const ClassPage = () => {
   const { classId } = useParams();
@@ -160,19 +161,22 @@ const ClassPage = () => {
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
       <div
         className={classNames({
-          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+          "flex w-full justify-between sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
       >
-        <Link
-          className="hover:underline hover:text-zinc-600 cursor-pointer"
-          to="/classes"
-        >
-          Classes
-        </Link>
-        <ChevronRightIcon className="w-5 h-5 mt-1" />
-        <div>{currentClass && currentClass.class_name}</div>
+        <div className="flex items-center gap-2">
+          <Link
+            className="hover:underline hover:text-zinc-600 cursor-pointer"
+            to="/classes"
+          >
+            Classes
+          </Link>
+          <ChevronRightIcon className="w-5 h-5 mt-1" />
+          <div>{currentClass && currentClass.class_name}</div>
+        </div>
+        <HeaderProfile />
       </div>
       {/* Filters and Utility */}
       <div className="flex max-w-screen-xl w-full mx-auto justify-between items-center p-4 gap-6">
@@ -191,7 +195,6 @@ const ClassPage = () => {
             setNameFilter(e.target.value);
           }}
         />
-        <button onClick={() => console.log(currentTeacher)}>LOG</button>
         {/* <button
           onClick={() =>
             console.log(

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import Select from "react-select";
 import { useClasses } from "../contexts/classContext";
+import HeaderProfile from "../components/HeaderProfile";
 
 const Classes = () => {
   const navigate = useNavigate();
@@ -99,12 +100,13 @@ const Classes = () => {
       <div className="flex w-auto">
         <div
           className={classNames({
-            "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+            "flex w-full justify-between sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
             "border-b border-b-zinc-200 bg-white": true,
             "text-zinc-700 font-semibold text-xl": true,
           })}
         >
           Classes
+          <HeaderProfile />
         </div>
       </div>
       {/* Filters and Buttons*/}

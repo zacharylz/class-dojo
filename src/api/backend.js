@@ -4,6 +4,12 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 export const getAllStudents = async (accessToken) => {
   try {
+    console.log(
+      "token",
+      accessToken,
+      "token is true",
+      accessToken ? true : false
+    );
     const students = await axios
       .get(`${url}/teachers/students/getAll`, {
         headers: {
