@@ -18,8 +18,11 @@ const Student = () => {
     allSkills,
     allClassSkills,
     currentClassFeedback,
+    currentClassTeachers,
+    currentTeacher,
     setRefreshData,
     refreshData,
+    accessToken,
   } = useClasses();
   const [classSkills, setClassSkills] = useState([]);
   const [currentStudent, setCurrentStudent] = useState([]);
@@ -35,7 +38,7 @@ const Student = () => {
     setCurrentClass(currentClassData);
     setClassSkills(
       classSkillData.map((classSkill) => {
-        return { ...classSkill, skill_name: allSkills[classSkill.id] };
+        return { ...classSkill, skill_name: allSkills[classSkill.skill_id] };
       })
     );
     setCurrentStudent(
@@ -46,9 +49,14 @@ const Student = () => {
     currentClassFeedback.length != 0 &&
       setCurrentStudentFeedback(
         currentClassFeedback.find((student) => {
-          return student.student_id === parseInt(studentId);
+          return student.id === parseInt(studentId);
         }).recent_feedback
       );
+    // setCurrentStudentFeedback(
+    //   currentClassFeedback.find((student) => {
+    //     return student.student_id === parseInt(studentId);
+    //   }).recent_feedback
+    // );
   }, [allClasses, currentClass, currentClassFeedback]);
 
   const [studentProfile, setStudentProfile] = useState([
@@ -73,25 +81,34 @@ const Student = () => {
   const [newFeedbackScore, setNewFeedbackScore] = useState("");
 
   const submitFeedback = async () => {
-    await giveStudentsFeedback(
-      currentStudent.id,
-      currentClass.id,
-      1, // TODO: replace with teacherId
-      selectedSkill.skill_id,
-      newFeedbackDetails,
-      newFeedbackScore.value
-    );
-    setNewFeedbackDetails("");
-    setNewFeedbackScore([]);
-    setRefreshData(refreshData + 1);
+    if (
+      !currentClassTeachers
+        .map((teacher) => teacher.id)
+        .includes(currentTeacher.id)
+    ) {
+      alert("You are not assigned to this class.");
+    } else {
+      await giveStudentsFeedback(
+        currentStudent.id,
+        currentClass.id,
+        currentTeacher.id,
+        selectedSkill.skill_id,
+        newFeedbackDetails,
+        newFeedbackScore.value,
+        accessToken
+      );
+      setNewFeedbackDetails("");
+      setNewFeedbackScore([]);
+      setRefreshData(refreshData + 1);
+    }
   };
 
   return (
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
-      <div className="w-full min-h-[57px]"></div>
+      {/* <div className="w-full min-h-[57px]"></div> */}
       <div
         className={classNames({
-          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
+          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
@@ -115,10 +132,11 @@ const Student = () => {
       {/* Profile and Skill Cards */}
       <div className="flex max-w-screen-lg w-full mx-auto border-b border-zinc-200">
         {/* Profile */}
-        <div className="flex flex-col w-1/3 px-4 pt-8 pb-4 gap-4">
+        <div className="flex flex-col px-4 pt-8 pb-4 gap-4">
           <div className="text-2xl font-semibold text-zinc-700">
             {currentStudent && currentStudent.full_name}
           </div>
+          <button onClick={() => console.log(currentClassFeedback)}>LOG</button>
           {studentProfile.map((item) => {
             return (
               <div className="flex flex-col">
@@ -129,7 +147,7 @@ const Student = () => {
           })}
         </div>
         {/* Skill Cards */}
-        <div className="w-2/3 gap-6 py-4 px-4 grid grid-cols-4">
+        <div className="grow gap-2 py-4 px-4 grid grid-cols-4">
           {classSkills.map((classSkill) => {
             return (
               <SkillCard

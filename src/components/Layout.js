@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
     <div
       className={classNames({
         // 👇 use grid layout
-        "grid min-h-screen": true,
+        "grid min-h-screen max-w-full": true,
         // 👇 toggle the width of the sidebar depending on the state
         "grid-cols-sidebar": !collapsed,
         "grid-cols-sidebar-collapsed": collapsed,
@@ -20,7 +20,6 @@ const Layout = ({ children }) => {
       {/* sidebar */}
       <Sidebar
         collapsed={collapsed}
-        // setCollapsed={() => setSidebarCollapsed()}
         setCollapsed={() => setSidebarCollapsed((prev) => !prev)}
       />
       {/* content */}

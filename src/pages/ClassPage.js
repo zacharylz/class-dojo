@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-// import { useParams } from "react-router";
 import classNames from "classnames";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useClasses } from "../contexts/classContext";
@@ -7,8 +6,8 @@ import { Link, useParams } from "react-router-dom";
 import { useTable, useFilters } from "react-table";
 import { useNavigate } from "react-router";
 import AddPerson from "../components/AddPerson";
+import { addStudentsToClass, addTeacherToClass } from "../api/backend";
 import Select from "react-select";
-import { addStudentsToClass } from "../api/backend";
 
 const ClassPage = () => {
   const { classId } = useParams();
@@ -19,8 +18,11 @@ const ClassPage = () => {
     currentClass,
     setCurrentClass,
     currentClassFeedback,
+    currentClassTeachers,
+    currentTeacher,
     refreshData,
     setRefreshData,
+    accessToken,
   } = useClasses();
 
   useEffect(() => {
@@ -35,35 +37,6 @@ const ClassPage = () => {
 
   const [nameFilter, setNameFilter] = useState("");
 
-  // useEffect(() => {
-  //   const metrics = {};
-  //   for (let feedback of studentFeedback) {
-  //     feedback.skillId in metrics
-  //       ? (metrics[feedback.skillId] += feedback.skillValue)
-  //       : (metrics[feedback.skillId] = feedback.skillValue);
-  //   }
-  //   let netScore = 0;
-  //   let negativeSkills = 0;
-
-  //   for (let value of Object.values(metrics)) {
-  //     netScore += value;
-  //     negativeSkills = value < 0 ? (negativeSkills += 1) : negativeSkills;
-  //   }
-
-  //   metrics.netScore = netScore;
-  //   metrics.negativeSkills = negativeSkills;
-
-  //   setStudents(
-  //     students.map((student) => {
-  //       return {
-  //         ...student,
-  //         netScore: metrics.netScore,
-  //         negativeSkills: metrics.negativeSkills,
-  //       };
-  //     })
-  //   );
-  // }, []);
-
   const [addCoteachersStudentsBool, setAddCoteachersStudentsBool] =
     useState(false);
 
@@ -77,7 +50,7 @@ const ClassPage = () => {
     const studentsForDropdown = allStudents.filter(
       (student) =>
         !currentClassFeedback
-          .map((currStudent) => currStudent.student_id)
+          .map((currStudent) => currStudent.id)
           .includes(student.id)
     );
     setAddStudentOptions(
@@ -85,43 +58,72 @@ const ClassPage = () => {
         return { value: student.id, label: student.full_name };
       })
     );
+    const teachersForDropdown = allTeachers.filter(
+      (teacher) =>
+        !currentClassTeachers
+          .map((classTeacher) => classTeacher.id)
+          .includes(teacher.id)
+    );
     setAddCoteacherOptions(
-      allTeachers.map((teacher) => {
+      teachersForDropdown.map((teacher) => {
         return { value: teacher.id, label: teacher.full_name };
       })
     );
   }, []);
 
   const submitAddStudents = async () => {
-    await addStudentsToClass(
-      addStudentDropdown.map((student) => {
-        return student.value;
-      }),
-      currentClass.id
-    );
-    // console.log(
-    //   addStudentDropdown.map((student) => {
-    //     return student.value;
-    //   })
-    // );
-    setAddStudentDropdown([]);
-    setRefreshData(refreshData + 1);
+    if (
+      !currentClassTeachers
+        .map((teacher) => teacher.id)
+        .includes(currentTeacher.id)
+    ) {
+      alert("You are not assigned to this class.");
+    } else {
+      await addStudentsToClass(
+        addStudentDropdown.map((student) => {
+          return student.value;
+        }),
+        currentClass.id,
+        accessToken
+      )
+        .then(alert("Students added!"))
+        .catch((err) => {
+          alert("Unable to add students.");
+          console.log(err);
+        });
+      setAddStudentDropdown([]);
+      setRefreshData(refreshData + 1);
+    }
   };
 
-  const submitAddCoteachers = () => {
-    console.log(
-      addCoteacherDropdown.map((teacher) => {
-        return teacher.value;
-      })
-    );
-    setAddCoteacherDropdown([]);
+  const submitAddCoteachers = async () => {
+    if (
+      !currentClassTeachers
+        .map((teacher) => teacher.id)
+        .includes(currentTeacher.id)
+    ) {
+      alert("You are not assigned to this class.");
+    } else {
+      await addTeacherToClass(
+        currentClass.id,
+        addCoteacherDropdown.value,
+        accessToken
+      )
+        .then(alert("Co-teacher added!"))
+        .catch((err) => {
+          alert("Unable to add co-teacher.");
+          console.log(err);
+        });
+      setAddCoteacherDropdown([]);
+      setRefreshData(refreshData + 1);
+    }
   };
 
   const columns = useMemo(
     () => [
       {
         Header: "Student Id",
-        accessor: "student_id",
+        accessor: "id",
       },
       {
         Header: "Name",
@@ -129,7 +131,7 @@ const ClassPage = () => {
       },
       {
         Header: "Net Feedback Score",
-        accessor: "net_feedback_score",
+        accessor: "net_feedback",
       },
       // {
       //   Header: "Negative Skills",
@@ -156,10 +158,9 @@ const ClassPage = () => {
 
   return (
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
-      <div className="w-full min-h-[57px]"></div>
       <div
         className={classNames({
-          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
+          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
           "border-b border-b-zinc-200 bg-white": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
@@ -190,7 +191,18 @@ const ClassPage = () => {
             setNameFilter(e.target.value);
           }}
         />
-        <button onClick={() => console.log(currentClassFeedback)}>LOG</button>
+        <button onClick={() => console.log(currentTeacher)}>LOG</button>
+        {/* <button
+          onClick={() =>
+            console.log(
+              currentClassFeedback.find((student) => {
+                return student.id === parseInt("2");
+              }).recent_feedback
+            )
+          }
+        >
+          LOG
+        </button> */}
         {/* Add co-teachers and students button */}
         <button
           className={classNames({
@@ -236,11 +248,22 @@ const ClassPage = () => {
               </button>
             </div>
             <div className="flex flex-col gap-2 px-2 pb-2">
-              <AddPerson
+              {/* <AddPerson
                 people="co-teachers"
                 peopleOptions={addCoteacherOptions}
                 addPeopleDropdown={addCoteacherDropdown}
                 setAddPeopleDropdown={setAddCoteacherDropdown}
+              /> */}
+              <div className="text-lg font-semibold text-zinc-700">
+                Add co-teachers:
+              </div>
+              <Select
+                className="w-[300px]"
+                options={addCoteacherOptions}
+                value={addCoteacherDropdown}
+                onChange={(e) => {
+                  setAddCoteacherDropdown(e);
+                }}
               />
               <button
                 className={classNames({
@@ -282,7 +305,7 @@ const ClassPage = () => {
                 <tr
                   className="hover:bg-zinc-100"
                   onClick={() =>
-                    navigate(`/class/${classId}/${row.original.student_id}`)
+                    navigate(`/class/${classId}/${row.original.id}`)
                   }
                   {...row.getRowProps()}
                 >

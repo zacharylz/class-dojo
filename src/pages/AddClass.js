@@ -5,9 +5,18 @@ import { useClasses } from "../contexts/classContext";
 import { Link } from "react-router-dom";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import AddPerson from "../components/AddPerson";
+import { createClass } from "../api/backend";
 
 const AddClass = () => {
-  const { allStudents, allSubjects, allSkills } = useClasses();
+  const {
+    allStudents,
+    allSubjects,
+    allSkills,
+    currentTeacher,
+    refreshData,
+    setRefreshData,
+    accessToken,
+  } = useClasses();
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [skillOptions, setSkillOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
@@ -40,40 +49,46 @@ const AddClass = () => {
   const [selectedName, setSelectedName] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("");
-  const [selectedSkills, setSelectedSkills] = useState([]);
-  const [addStudentsDropdown, setAddStudentsDropdown] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState("");
+  const [addStudentsDropdown, setAddStudentsDropdown] = useState("");
 
-  const handleSubmit = () => {
-    console.log(
-      "Name",
-      selectedName,
-      "Subject",
-      selectedSubject.value,
-      "Grade",
-      selectedGrade.value,
-      "Skills",
-      selectedSkills.map((skill) => {
-        return skill.value;
-      }),
-      "Students",
-      addStudentsDropdown.map((student) => {
-        return student.value;
-      })
-    );
-    setSelectedName("");
-    setSelectedSubject([]);
-    setSelectedGrade([]);
-    setSelectedSkills([]);
-    setAddStudentsDropdown([]);
+  const handleSubmit = async () => {
+    if (selectedName && selectedSubject && selectedGrade && selectedSkills) {
+      const newClass = await createClass(
+        selectedName,
+        selectedSubject.value,
+        selectedGrade.value,
+        currentTeacher.id,
+        addStudentsDropdown.map((student) => {
+          return student.value;
+        }),
+        selectedSkills.map((skill) => {
+          return skill.value;
+        }),
+        accessToken
+      )
+        .then(alert("Class created!"))
+        .catch((err) => {
+          alert("Unable to create class.");
+          console.log(err);
+        });
+      setRefreshData(refreshData + 1);
+      setSelectedName("");
+      setSelectedSubject([]);
+      setSelectedGrade([]);
+      setSelectedSkills([]);
+      setAddStudentsDropdown([]);
+    } else {
+      alert("All fields are required.");
+    }
   };
 
   return (
     <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
-      <div className="w-full min-h-[57px]"></div>
       <div
         className={classNames({
-          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
-          "border-b border-b-zinc-200": true,
+          "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+          "border-b bg-white border-b-zinc-200": true,
           "text-zinc-700 font-semibold text-xl": true,
         })}
       >

@@ -12,7 +12,7 @@ const Classes = () => {
   const [subjectFilter, setSubjectFilter] = useState("");
   const [gradeFilter, setGradeFilter] = useState("");
 
-  const { allClasses, setCurrentClass } = useClasses();
+  const { allClasses } = useClasses();
 
   const MultiSelectFilter = (rows, column, filterValue) => {
     return filterValue.length === 0
@@ -36,16 +36,6 @@ const Classes = () => {
         accessor: "grade",
         filter: MultiSelectFilter,
       },
-      // {
-      //   Header: "Owner",
-      //   accessor: "owner",
-      // },
-      // {
-      //   Header: "Co-teachers",
-      //   accessor: "coTeachers",
-      //   // Cell: ({value}) => value.map((item)=> <div className="border">{item}</div>)
-      //   Cell: ({ value }) => value.join(", "),
-      // },
     ],
     []
   );
@@ -105,16 +95,17 @@ const Classes = () => {
   );
 
   return (
-    <div className="flex flex-col w-full max-h-screen min-h-screen overflow-y-scroll">
-      <div className="w-full min-h-[57px]"></div>
-      <div
-        className={classNames({
-          "flex w-full fixed h-[57px] px-3 items-center gap-2": true,
-          "border-b border-b-zinc-200 bg-white": true,
-          "text-zinc-700 font-semibold text-xl": true,
-        })}
-      >
-        Classes
+    <div className="flex flex-col max-h-screen min-h-screen overflow-y-scroll">
+      <div className="flex w-auto">
+        <div
+          className={classNames({
+            "flex w-full sticky top-0 z-10 min-h-[57px] px-3 items-center gap-2": true,
+            "border-b border-b-zinc-200 bg-white": true,
+            "text-zinc-700 font-semibold text-xl": true,
+          })}
+        >
+          Classes
+        </div>
       </div>
       {/* Filters and Buttons*/}
       <div className="flex w-full mx-auto max-w-screen-xl justify-between items-center p-4">

@@ -15,7 +15,7 @@ const SkillCard = ({
           : setSelectedSkill(classSkill);
       }}
       className={classNames({
-        "flex flex-col items-center justify-between w-30 h-32 m-4 rounded-md py-4 px-2 cursor-pointer": true,
+        "flex flex-col items-center justify-between w-28 h-32 m-4 rounded-md py-4 px-2 cursor-pointer": true,
         "border border-zinc-400": true,
         "hover:ring-1 hover:ring-inset hover:ring-indigo-500 transition-all duration-300": true,
         "text-zinc-50 font-semibold  bg-indigo-500":

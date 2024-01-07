@@ -27,19 +27,19 @@ const AddPerson = ({
           setAddPeopleDropdown(e);
         }}
       />
-      {/* Display selected students */}
+      {/* Display selected people */}
       <div className="flex flex-col gap-1 p-2 border w-[300px] h-28 overflow-auto border-zinc-300 rounded-[4px]">
         {addPeopleDropdown.length ? (
-          addPeopleDropdown.map((student) => (
+          addPeopleDropdown.map((person) => (
             <div className="flex w-full">
-              <div className="w-4/5 overflow-hidden">{student.label}</div>
+              <div className="w-4/5 overflow-hidden">{person.label}</div>
               <button
                 className="w-1/5 items-center hover:font-bold"
                 onClick={() => {
                   setAddPeopleDropdown(
                     addPeopleDropdown.filter(
-                      (selectedStudent) =>
-                        !(selectedStudent.label === student.label)
+                      (selectedPerson) =>
+                        !(selectedPerson.label === person.label)
                     )
                   );
                 }}
@@ -54,16 +54,16 @@ const AddPerson = ({
       </div>
       {/* <div className="flex flex-col gap-1 p-2 border w-[300px] h-28 overflow-auto border-zinc-300 rounded-[4px]">
         {selectedStudents.length ? (
-          selectedStudents.map((student) => (
+          selectedStudents.map((person) => (
             <div className="flex w-full">
-              <div className="w-4/5 overflow-hidden">{student.studentName}</div>
+              <div className="w-4/5 overflow-hidden">{person.studentName}</div>
               <button
                 className="w-1/5 items-center hover:font-bold"
                 onClick={() => {
                   setSelectedStudents(
                     selectedStudents.filter(
-                      (selectedStudent) =>
-                        !(selectedStudent.studentId === student.studentId)
+                      (selectedPerson) =>
+                        !(selectedPerson.studentId === person.studentId)
                     )
                   );
                 }}
